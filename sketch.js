@@ -1,6 +1,6 @@
 var api_1 = "https://api.tumblr.com/v2/blog/";
-blog = "toust";
-//blog = "web1995";
+//blog = "toust";
+blog = "web1995";
 var api_2 = ".tumblr.com/posts/photo?api_key=UxXCR2GAdx9idhSiONYzaYl8SIViskisNfj0NGyRmAPbqhXKnQ&offset=0&limit=50";
 
 var img;
@@ -15,7 +15,8 @@ var photosInPost = 0;
 var blogInput, timeInput, postButton, imgButton;
 var statusFotos = false;
 
-var randomButton = false;
+var randomButton = true;
+let lastRandom = 0;
 
 function setup() {
   clear();
@@ -126,10 +127,15 @@ function mousePressed() {
 // Checar que sí salgan todas las fotos
 // Que en el random no se repitan las fotos
 function randomImg() {
-  postsIndex = floor(random(postsPhotoArray.length));
-  if (photosInPostArray[postsIndex] > 1) {
-    photosIndex = floor(random(photosInPostArray[postsIndex]));
-  } else {
-    photosIndex = 0;
-  }
+    postsIndex = floor(random(postsPhotoArray.length));
+    if (postsIndex == lastRandom) {
+      postsIndex = floor(random(postsPhotoArray.length));
+    } else {
+      lastRandom = postsIndex;
+      if (photosInPostArray[postsIndex] > 0) {
+        photosIndex = floor(random(photosInPostArray[postsIndex]));
+      } else {
+        photosIndex = 0;
+      }
+    }
 }
