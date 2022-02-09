@@ -7,7 +7,7 @@ var api_2 = ".tumblr.com/posts/photo?api_key=UxXCR2GAdx9idhSiONYzaYl8SIViskisNfj
 
 var img;
 var respuesta;
-var time = 5; //secs
+
 var postsIndex = 0; // para el loop de posts
 var photosIndex = 0; // para el loop de photos en el post
 
@@ -16,7 +16,7 @@ var photosInPostArray = [];
 var totalPhotos = 0;
 var totalPhotosRemaining;
 var noMorePhotosLeft = false;
-var stopTimer = false;
+var stopTimer = true;
 var photosInPost = 0;
 var blogInput, timeInput, postButton, imgButton;
 var statusFotos = false;
@@ -26,23 +26,62 @@ let lastRandom = 0;
 var lastRandomArray = [];
 var lastRandomIndex = 0;
 
-let slider;
-
+var timeImg = 10; //secs the img will be on display
+let lastTimeImg = 0;
+let timeSettings = 10;  // secs Setting will be on display
+let lastTimeSettings = 0;
 
 
 function setup() {
   clear();
-
-  blogInput = select('#blog');
+  ripTumbview = createP('RIP Tumbview - Play a slideshow for a tumblr blog.')
+  ripTumbview.position(20,20);
+  blogInput = createInput('Tumblr name');
+  blogInput.position(20,65);
   blogInput.changed(changeBlog);
 
-  timeInput = select('#time');
+  timeInput = createInput('Seconds');
+  timeInput.position(175,65);
   timeInput.changed(changeTime);
 
   img = document.getElementById("foto");
-  //document.addEventListener("mousedown", (e) => e.preventDefault(), false); // Esto desabilita el doble click del mouse
+
+  playButton = createButton('Go') //⏸
+  playButton.position(360,65);
+  playButton.mousePressed(start);
+
   //makeTimer(time);
   //setInterval(timeFunction, time * 1000); // Necesitamos que time se actualice aquí
+}
+
+function draw() {
+  if (millis()-lastTimeSettings > timeSettings * 1000){
+    ripTumbview.style('visibility', 'hidden');
+    blogInput.style('visibility', 'hidden');
+    timeInput.style('visibility', 'hidden');
+    playButton.style('visibility', 'hidden');
+    noCursor();
+  }
+}
+
+function mouseMoved() {
+  displayVisible();
+}
+
+function displayVisible(){
+  ripTumbview.style('visibility', 'visible');
+  blogInput.style('visibility', 'visible');
+  timeInput.style('visibility', 'visible');
+  playButton.style('visibility', 'visible');
+  cursor(ARROW);
+
+  lastTimeSettings = millis();
+}
+
+function start() {
+  ask();
+  playButton.html('⏸');
+  playButton.mousePressed(togglePlaying);
 }
 
 function makeTimer() {
@@ -53,7 +92,6 @@ function makeTimer() {
 function changeBlog() {
   blog = blogInput.value();
   api_1 = "https://api.tumblr.com/v2/blog/";
-  randomImg();
   ask();
 }
 
@@ -66,34 +104,79 @@ function timeFunction() {
   if (stopTimer == false) {
     print("--- TIMER ---");
     print("Timer = " + time);
-    randomImg();
     ask();
-  } else {
-    print('Timer stopped.');
   }
 }
 
-function newData() {
-  api_2 = ".tumblr.com/posts/photo?api_key=UxXCR2GAdx9idhSiONYzaYl8SIViskisNfj0NGyRmAPbqhXKnQ&offset=" + offset * 50 + "&limit=" + limit;
-  //print(api_2);
-  postsIndex = 0; // para el loop de posts
-  photosIndex = 0; // para el loop de photos en el post
+function togglePlaying() {
+  if (stopTimer == false) {
+    stopTimer = true;
+    print('Timer stopped.');
+    playButton.html('▶️');
+  } else {
+    stopTimer = false;
+    print('Timer start.');
+    playButton.html('⏸');
+  }
+}
 
-  postsPhotoArray = [];
-  photosInPostArray = [];
-  totalPhotos = 0;
-  photosInPost = 0;
-  lastRandom = 0;
-  lastRandomArray = [];
-  lastRandomIndex = 0;
-
+function keyPressed() {
+  displayVisible();
+  if (keyCode === 32) {
+    ask();
+  }
 }
 
 function ask() {
+  randomImg();
+
   var url = api_1 + blog + api_2;
   loadJSON(url, gotData);
   print('Offset: ' + offset);
   print('Photos remaining: ' + totalPhotosRemaining);
+}
+
+function randomImg() {
+  if (noMorePhotosLeft == false) {
+    postsIndex = floor(random(postsPhotoArray.length));
+    //print("PostsIndex = " + postsIndex);
+
+    if (totalPhotosRemaining <= 0) {
+      print('There are no photos left!!!!!!!');
+      offset++;
+      newData();
+      /* noMorePhotosLeft = true;
+      return; */
+    }
+
+    if (lastRandomArray.includes(postsIndex)) {
+
+      if (photosInPostArray[postsIndex] == 1) {
+        //print("Repeat!!!");
+        randomImg();
+      } else { // if hay más de una foto
+        //print('✨ More than one foto! Photos in post: ' + photosInPostArray[postsIndex]);
+        photosIndex = floor(random(1, photosInPostArray[postsIndex]));
+        //print('-- Photos index: ' + photosIndex);
+        photosInPostArray[postsIndex]--;
+
+        totalPhotosRemaining--;
+        //print("lastRandomArray: " + lastRandomArray);
+        //print('Photos remaining: ' + totalPhotosRemaining);
+      }
+
+    } else if (lastRandomArray.includes(postsIndex) == false) {
+      append(lastRandomArray, postsIndex);
+      lastRandomIndex++;
+      photosIndex = 0;
+
+      totalPhotosRemaining--;
+      //print("lastRandomArray: " + lastRandomArray);
+      //print('Photos remaining: ' + totalPhotosRemaining);
+    }
+
+  }
+
 }
 
 function gotData(tumblr) {
@@ -115,6 +198,7 @@ function gotData(tumblr) {
       }
       photosInPostArray.push(photosInPost);
     }
+    print('Blogname= ' + blog.toUpperCase());
     print('Total photos: ' + totalPhotos);
     totalPhotosRemaining = totalPhotos - 1;
     print('*** PostsPhotoArray: ' + postsPhotoArray);
@@ -129,6 +213,22 @@ function gotData(tumblr) {
   }
   img.style.visibility = "visible";
   noMorePhotosLeft = false;
+}
+
+function newData() {
+  api_2 = ".tumblr.com/posts/photo?api_key=UxXCR2GAdx9idhSiONYzaYl8SIViskisNfj0NGyRmAPbqhXKnQ&offset=" + offset * 50 + "&limit=" + limit;
+  //print(api_2);
+  postsIndex = 0; // para el loop de posts
+  photosIndex = 0; // para el loop de photos en el post
+
+  postsPhotoArray = [];
+  photosInPostArray = [];
+  totalPhotos = 0;
+  photosInPost = 0;
+  lastRandom = 0;
+  lastRandomArray = [];
+  lastRandomIndex = 0;
+
 }
 
 /* function mousePressed() {
@@ -198,55 +298,8 @@ function gotData(tumblr) {
 } */
 
 // Back button
-/* function keyPressed() {
-  randomImg();
-  ask();
-} */
 
 /* function mousePressed() {
   stopTimer = !stopTimer; // toggle a boolean
   print('stopTimer is ' + stopTimer);
 } */
-
-function randomImg() {
-  if (noMorePhotosLeft == false) {
-    postsIndex = floor(random(postsPhotoArray.length));
-    //print("PostsIndex = " + postsIndex);
-
-    if (totalPhotosRemaining <= 0) {
-      print('There are no photos left!!!!!!!');
-      offset++;
-      newData();
-      /* noMorePhotosLeft = true;
-      return; */
-    }
-
-    if (lastRandomArray.includes(postsIndex)) {
-
-      if (photosInPostArray[postsIndex] == 1) {
-        //print("Repeat!!!");
-        randomImg();
-      } else { // if hay más de una foto
-        //print('✨ More than one foto! Photos in post: ' + photosInPostArray[postsIndex]);
-        photosIndex = floor(random(1, photosInPostArray[postsIndex]));
-        //print('-- Photos index: ' + photosIndex);
-        photosInPostArray[postsIndex]--;
-
-        totalPhotosRemaining--;
-        //print("lastRandomArray: " + lastRandomArray);
-        //print('Photos remaining: ' + totalPhotosRemaining);
-      }
-
-    } else if (lastRandomArray.includes(postsIndex) == false) {
-      append(lastRandomArray, postsIndex);
-      lastRandomIndex++;
-      photosIndex = 0;
-
-      totalPhotosRemaining--;
-      //print("lastRandomArray: " + lastRandomArray);
-      //print('Photos remaining: ' + totalPhotosRemaining);
-    }
-
-  }
-
-}
