@@ -19,11 +19,11 @@ body.ui-visible { cursor: default; }
 
 #ui {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
   padding: 24px 28px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  background: linear-gradient(rgba(0,0,0,0.85), transparent);
   opacity: 0;
   transition: opacity 0.35s ease;
   z-index: 10;

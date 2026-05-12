@@ -8,7 +8,7 @@ let shown = new Set();
 let history = [];
 let histPos = -1;
 let currentPostUrl = '';
-let timeImg = 8;
+let timeImg = 10;
 let timer = null;
 let isPlaying = false;
 
@@ -44,7 +44,7 @@ showUI();
 // ── Controls ─────────────────────────────────────────────
 goBtn.addEventListener('click', async () => {
   blog = blogInput.value.trim() || 'toust';
-  timeImg = parseInt(timeInput.value) || 8;
+  timeImg = parseInt(timeInput.value) || 10;
   goBtn.textContent = '...';
   goBtn.disabled = true;
   reset();
@@ -66,6 +66,7 @@ linkBtn.addEventListener('click', () => {
 
 // ── Keyboard / click ─────────────────────────────────────
 document.addEventListener('keydown', e => {
+  if (e.code === 'Enter')      { e.preventDefault(); goBtn.click(); }
   if (e.code === 'Space' || e.code === 'ArrowRight') { e.preventDefault(); next(); }
   if (e.code === 'ArrowLeft')  { e.preventDefault(); prev(); }
 });
@@ -130,12 +131,14 @@ async function next() {
   history.push(idx);
   histPos = history.length - 1;
   showPhoto(idx);
+  if (isPlaying) scheduleNext();
 }
 
 function prev() {
   if (histPos > 0) {
     histPos--;
     showPhoto(history[histPos]);
+    if (isPlaying) scheduleNext();
   }
 }
 
