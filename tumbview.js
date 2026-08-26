@@ -1,4 +1,4 @@
-const API_KEY = 'UxXCR2GAdx9idhSiONYzaYl8SIViskisNfj0NGyRmAPbqhXKnQ';
+const API_KEY = (window.TUMBVIEW_CONFIG && window.TUMBVIEW_CONFIG.apiKey) || '';
 const LIMIT = 50;
 
 let blog = 'toust';
@@ -43,6 +43,10 @@ showUI();
 
 // ── Controls ─────────────────────────────────────────────
 goBtn.addEventListener('click', async () => {
+  if (!API_KEY) {
+    goBtn.textContent = 'Missing API key — see README';
+    return;
+  }
   blog = blogInput.value.trim() || 'toust';
   timeImg = parseInt(timeInput.value) || 10;
   goBtn.textContent = '...';
