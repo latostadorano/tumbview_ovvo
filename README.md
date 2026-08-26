@@ -2,6 +2,8 @@
 
 A fullscreen slideshow viewer for any public Tumblr blog. Point it at a blog name and it plays a random, non-repeating sequence of that blog's photos.
 
+**Try it live:** [latostadorano.github.io/tumbview_ovvo](https://latostadorano.github.io/tumbview_ovvo/)
+
 ## What it does
 
 Tumbview fetches photo posts from a Tumblr blog through the Tumblr API and displays them one at a time, fullscreen, on a black background. Photos play in random order without repeats; once every photo on the current page has been shown, it automatically fetches the next page and keeps going. No build step, no dependencies — just static HTML/CSS/JS.
@@ -34,18 +36,17 @@ Tumbview fetches photo posts from a Tumblr blog through the Tumblr API and displ
 
 ## Setup
 
-Tumbview needs a Tumblr API key to fetch posts. Keys are kept out of the repo on purpose (see [Notes](#notes)):
+Tumbview needs a Tumblr API key to fetch posts. The repo ships with `config.js` containing a public, read-only demo key, so it works out of the box — no setup needed to just try it.
+
+To use your own key instead:
 
 1. Get a free key at [tumblr.com/oauth/apps](https://www.tumblr.com/oauth/apps).
-2. Copy `config.example.js` to `config.js`.
-3. Put your key in `config.js`:
+2. Replace the value in `config.js` (or copy `config.example.js` over it):
    ```js
    window.TUMBVIEW_CONFIG = {
      apiKey: 'YOUR_TUMBLR_API_KEY'
    };
    ```
-
-`config.js` is gitignored, so your key stays local.
 
 ## Usage
 
@@ -68,7 +69,7 @@ Then type a blog name (without `.tumblr.com`), set the interval in seconds, and 
   <img src="screenshots/Screenshot_4.png" width="49%" alt="Portrait photo, UI visible" />
 </p>
 
-## Notes
+---
 
-- **API key.** The Tumblr API key now lives in a local, gitignored `config.js` (see [Setup](#setup)) instead of being hardcoded in `tumbview.js`. This is still a client-side key exposed to anyone using the deployed page — that's unavoidable for a pure static site without a backend proxy — but at least it's no longer committed to the repo.
-- **Previously exposed key.** An earlier version of this repo had a real API key committed directly in the source. That key is still visible in the git history on GitHub. If it's still active, regenerate/revoke it from your [Tumblr app settings](https://www.tumblr.com/oauth/apps) and use the new one only in your local `config.js`.
+**Live demo:** [latostadorano.github.io/tumbview_ovvo](https://latostadorano.github.io/tumbview_ovvo/)
+
