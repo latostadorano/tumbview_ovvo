@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tumbview</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='60%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%23a855f7'/%3E%3Cstop offset='45%25' stop-color='%23f97316'/%3E%3Cstop offset='100%25' stop-color='%23eab308'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='6' fill='url(%23g)'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='rgba(255,255,255,0.9)' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='white'/%3E%3Ccircle cx='22' cy='10' r='1.5' fill='rgba(255,255,255,0.8)'/%3E%3Ccircle cx='9' cy='9' r='1' fill='rgba(255,255,255,0.6)'/%3E%3Ccircle cx='25' cy='20' r='1' fill='rgba(255,255,255,0.5)'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <img id="foto" alt="">
+
+  <!-- Tab tempo overlay: top-right corner -->
+  <div id="tab-overlay">
+    <div id="tab-bpm">– –</div>
+    <div id="tab-taps">tap</div>
+  </div>
+
+  <div id="ui">
+    <div id="controls">
+      <span id="label">Tumbview</span>
+      <div id="inputs">
+        <input id="blog" type="text" placeholder="blog name" value="toust" spellcheck="false" autocomplete="off">
+        <span class="dim">.tumblr.com</span>
+        <input id="time" type="number" value="10" min="1" max="999">
+        <span class="dim">sec</span>
+      </div>
+      <div id="buttons">
+        <button id="go">Go</button>
+        <button id="play" disabled>▶</button>
+        <button id="link" disabled title="Open on Tumblr">🔗</button>
+        <button id="fs-btn" title="Fullscreen (F)">⛶</button>
+        <button id="menu-btn" title="Menu">☰</button>
+      </div>
+    </div>
+
+    <!-- Unified menu panel: Blogs / Audio tabs -->
+    <div id="menu-panel">
+      <div id="menu-inner">
+        <div id="menu-tabs">
+          <button class="menu-tab active" data-tab="blogs">Blogs</button>
+          <button class="menu-tab" data-tab="audio">Audio</button>
+        </div>
+
+        <div class="menu-tab-content active" data-tab-content="blogs">
+          <div id="blog-list"></div>
+          <div id="add-blog-row">
+            <input id="new-blog" type="text" placeholder="blog name" spellcheck="false" autocomplete="off">
+            <button id="add-blog-btn">Add</button>
+          </div>
+        </div>
+
+        <div class="menu-tab-content" data-tab-content="audio">
+          <div class="audio-row">
+            <span class="row-label">Source</span>
+            <div id="audio-source-row">
+              <button class="audio-src-btn active" data-src="mic">🎤 Mic</button>
+              <button class="audio-src-btn" data-src="system">🖥 System</button>
+            </div>
+          </div>
+
+          <div class="audio-row">
+            <span class="row-label">Listen</span>
+            <button id="audio-analyze-btn">Start</button>
+            <span id="bpm-readout" class="dim">– – bpm</span>
+          </div>
+          <div id="audio-status" class="dim"></div>
+
+          <div class="audio-row">
+            <span class="row-label">Change every</span>
+            <div id="beat-presets">
+              <button class="beat-preset active" data-n="4">4</button>
+              <button class="beat-preset" data-n="8">8</button>
+              <button class="beat-preset" data-n="16">16</button>
+              <button class="beat-preset" data-n="24">24</button>
+              <button class="beat-preset" data-n="32">32</button>
+              <button class="beat-preset" data-n="48">48</button>
+              <button class="beat-preset" data-n="64">64</button>
+            </div>
+            <span id="beat-seconds" class="dim">≈ – –s</span>
+          </div>
+          <input id="beat-count" type="number" value="4" min="1" max="64" hidden>
+
+          <div id="audio-apply-row">
+            <button id="audio-apply-btn" disabled>Activate</button>
+            <div id="audio-active-indicator" class="hidden">
+              <span class="active-dot"></span> Active
+              <button id="audio-deactivate-btn">Stop</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="tumbview.js"></script>
+</body>
+</html>
