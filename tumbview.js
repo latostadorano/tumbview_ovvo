@@ -5,6 +5,7 @@ let blog = 'toust';
 let offset = 0;
 let photoList = [];   // [{ url, postUrl }]
 let shown = new Set();
+let blogExhausted = false;
 let history = [];
 let histPos = -1;
 let currentPostUrl = '';
@@ -82,6 +83,7 @@ foto.addEventListener('click', next);
 function reset() {
   photoList = [];
   shown.clear();
+  blogExhausted = false;
   history = [];
   histPos = -1;
   offset = 0;
@@ -94,11 +96,13 @@ async function fetchPhotos() {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    const before = photoList.length;
     data.response.posts
       .filter(p => p.type === 'photo')
       .forEach(p => p.photos.forEach(ph => {
         photoList.push({ url: ph.original_size.url, postUrl: p.post_url });
       }));
+    if (photoList.length === before) blogExhausted = true;
     console.log(`${blog}: ${photoList.length} photos loaded (offset ${offset})`);
   } catch (err) {
     console.error('Tumblr API error:', err);
@@ -123,10 +127,15 @@ function showPhoto(idx) {
 // ── Playback ─────────────────────────────────────────────
 async function next() {
   let idx = randomUnshown();
-  if (idx === -1) {
-    // all photos seen — fetch next page
+  if (idx === -1 && !blogExhausted) {
+    // all currently loaded photos seen — fetch next page (previously shown
+    // photos stay marked, so nothing already seen repeats early)
     offset++;
     await fetchPhotos();
+    idx = randomUnshown();
+  }
+  if (idx === -1 && blogExhausted) {
+    // truly out of new content — loop back over the whole blog
     shown.clear();
     idx = randomUnshown();
   }
