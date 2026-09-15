@@ -1,14 +1,21 @@
 # Tumbview — Handoff Document
 
-_Última actualización: 2026-09-14, tras la sesión que arregló la detección de beats y rediseñó el menú._
+_Última actualización: 2026-09-15 — v22 promovido a la raíz del repo._
 
 ## Qué es Tumbview
 
 Slideshow fullscreen de fotos de Tumblr, pensado para usarse como visuales en contextos de música/performance. La idea es tener una pantalla con imágenes que cambian al ritmo de lo que suena, ya sea manualmente, con tap-tempo, o con detección automática de beats por audio.
 
-Tres archivos: `index.html`, `style.css`, `tumbview.js`, dentro de `v22/` (carpeta de trabajo, no publicada — no confundir con la raíz del repo, que es la versión simple sin audio que sí está en GitHub Pages). Sin dependencias externas, vanilla JS.
+**Estado a la fecha:** la versión con audio-reactividad (antes en `v22/`) ya es la raíz del repo y la que sirve GitHub Pages — `index.html`, `style.css`, `tumbview.js` en la raíz. La carpeta `v22/` se deja como estaba (histórico de la iteración de trabajo); `v1/` y `v2/` son iteraciones aún más viejas. Sin dependencias externas, vanilla JS.
 
-**Estado a la fecha:** la detección de beats por audio ya funciona con música real (probado con NTS.live y YouTube vía "System audio"). Falta re-probar con audio real la última ronda de ajustes (ver "Pendiente de probar" abajo) antes de considerar esta versión lista para reemplazar la raíz del repo.
+La detección de beats por audio ya funciona con música real (probado con NTS.live y YouTube vía "System audio"). Sigue pendiente el retest explícito de la última ronda de ajustes ya en producción (ver "Pendiente de probar" abajo) — se verificaron con audio sintético al implementarlos, no con música real todavía.
+
+### Cambios de la sesión de promoción (2026-09-15)
+- Botón de tap-tempo: responde a click/touch además de la tecla `Tab`; se movió a la esquina inferior derecha y se le redujo la altura (antes se superponía con la barra de menú superior).
+- Barra de controles y panel de menú (Blogs/Audio) ahora son responsivos: hacen wrap en pantallas angostas en vez de cortarse, con breakpoints en 560px y 380px; targets táctiles más grandes en dispositivos touch. No se pudo verificar visualmente por debajo de ~500px de ancho (límite del entorno de prueba usado), aunque la lógica CSS es la misma ya probada a 500px con valores más chicos.
+- `touchstart` ahora también despierta la UI oculta (antes solo `mousemove`, así que en touch se quedaba sin forma de volver a mostrarla).
+- Dos presets nuevos en "Change every": **2** y **96** (además de los 4/8/16/24/32/48/64 ya existentes).
+- Al promover a la raíz, se restauró el patrón de `config.js` para la API key (el WIP en `v22/` la había hardcodeado directamente en `tumbview.js` con una key distinta a la del repo) y el mensaje "Missing API key — see README" que la versión simple ya tenía.
 
 ---
 
@@ -40,7 +47,7 @@ Antes había dos botones/paneles separados (☰ para blogs, ♪ para audio); se 
 - **Pestaña Audio**, 3 filas simples (ya no son "pasos" numerados con borde):
   - **Source**: Mic / System (toggle de 2 botones)
   - **Listen**: botón Start/Stop + readout de BPM en vivo (el número cambiando confirma que está escuchando y analizando — señal útil, no se debe cambiar a un "spinner" u otra cosa que la tape)
-  - **Change every**: botones preset **4 / 8 / 16 / 24 / 32 / 48 / 64** beats (antes era un input numérico a mano). El valor real vive en un `<input id="beat-count" hidden>` que los presets actualizan.
+  - **Change every**: botones preset **2 / 4 / 8 / 16 / 24 / 32 / 48 / 64 / 96** beats (antes era un input numérico a mano). El valor real vive en un `<input id="beat-count" hidden>` que los presets actualizan.
   - Botón **Activate** / indicador "● Active" + **Stop** para desactivar manualmente.
 
 El visualizador de beats (canvas estilo Rekordbox con línea de tiempo scrolleando) **se eliminó por completo** — nunca funcionó bien visualmente y no aportaba nada; el usuario pidió quitarlo. No reintroducirlo sin que lo pidan de nuevo explícitamente.
@@ -115,14 +122,15 @@ El algoritmo original (energía instantánea vs. promedio histórico) fallaba co
 ## Pendientes / bugs conocidos
 
 ### Pendiente de probar con audio real (próxima sesión)
-- [ ] Retest completo con NTS.live/YouTube de: no-auto-activate, tecla `A`, el fix de Tab-vs-Audio, y los presets nuevos (32/48/64) — todo esto se verificó solo con audio sintético en la sesión donde se implementó
+- [ ] Retest completo con NTS.live/YouTube de: no-auto-activate, tecla `A`, el fix de Tab-vs-Audio, y los presets 32/48/64 — todo esto se verificó solo con audio sintético en la sesión donde se implementó
 - [ ] Sesiones largas de Tab tempo (drift del `setTimeout` dinámico)
 - [ ] Probar en Safari / Firefox
+- [ ] Verificar el layout responsivo por debajo de ~500px de ancho real (celular físico) — solo se probó hasta 500px en el entorno de desarrollo
 
 ### Decisiones tomadas (no reabrir sin que el usuario lo pida)
 - Visualizador de beats: **eliminado**, no migrar a p5.js ni reconstruirlo — nunca funcionó bien y no aportaba.
 - Menú: unificado en un panel con pestañas Blogs/Audio en vez de dos botones/paneles separados.
 
 ### Deuda técnica
-- [ ] Subir a la raíz del repo / GitHub una vez validado con más pruebas reales (por ahora vive solo en `v22/`, sin publicar)
+- [x] Subir a la raíz del repo / GitHub — hecho 2026-09-15
 - [ ] Considerar `localStorage` para persistir la lista de blogs entre sesiones
