@@ -70,11 +70,13 @@ function setTimerSource(src) {
 
 // ── UI / cursor ───────────────────────────────────────────
 let cursorTimer;
-document.addEventListener('mousemove', () => {
+function wakeUI() {
   document.body.classList.add('ui-visible');
   clearTimeout(cursorTimer);
   cursorTimer = setTimeout(() => document.body.classList.remove('ui-visible'), 3000);
-});
+}
+document.addEventListener('mousemove', wakeUI);
+document.addEventListener('touchstart', wakeUI, { passive: true });
 document.body.classList.add('ui-visible');
 ui.classList.add('visible');   // siempre visible
 
@@ -262,6 +264,8 @@ document.addEventListener('keydown', e => {
   if (e.code === 'KeyA'       && !inInput) { e.preventDefault(); toggleAudioReactive(); return; }
 });
 document.addEventListener('keyup', e => { if (e.code === 'Tab') tabIsDown = false; });
+
+tabOverlay.addEventListener('pointerdown', e => { e.preventDefault(); onTabDown(); });
 
 // ── Tab beat grid ─────────────────────────────────────────
 let lastTapTime   = 0;

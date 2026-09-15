@@ -17,15 +17,22 @@ body.ui-visible { cursor: default; }
 /* ── Tab overlay ── */
 #tab-overlay {
   position: fixed;
-  top: 8px; right: 8px;
-  width: 54px; height: 54px;
+  bottom: 8px; right: 8px;
+  width: 54px; height: 34px;
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.25);
   border-radius: 4px;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 2px;
-  opacity: 1; 
-  z-index: 100; transition: opacity 0.1s;
+  align-items: center; justify-content: center; gap: 1px;
+  opacity: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  z-index: 100; transition: opacity 0.1s, background 0.15s;
+}
+#tab-overlay:hover, #tab-overlay:active {
+  background: rgba(255,255,255,0.2);
 }
 #tab-overlay.visible { opacity: 1; }
 #tab-bpm  { font: bold 11px 'Courier New',monospace; color: #fff; line-height: 1; }
@@ -44,7 +51,7 @@ body.ui-visible { cursor: default; }
 }
 #ui.visible { opacity: 1; pointer-events: all; }
 
-/* ── Controls bar — todo en una línea compacta ── */
+/* ── Controls bar — una línea compacta, envuelve si no entra ── */
 #controls {
   display: flex;
   align-items: center;
@@ -52,14 +59,16 @@ body.ui-visible { cursor: default; }
   font: 11px 'Courier New',monospace;
   color: #ccc;
   padding-bottom: 8px;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  row-gap: 6px;
 }
 #label {
   font-size: 11px; font-weight: bold;
   color: #fff; letter-spacing: 0.06em;
   white-space: nowrap;
 }
-#inputs, #buttons { display: flex; align-items: center; gap: 4px; }
+#inputs, #buttons { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+#buttons { margin-left: auto; }
 .dim { color: rgba(255,255,255,0.3); }
 
 input[type="text"], input[type="number"] {
@@ -116,7 +125,10 @@ button.active-btn {
   overflow: hidden; max-height: 0;
   transition: max-height 0.3s ease;
 }
-#menu-panel.open { max-height: 420px; }
+#menu-panel.open { max-height: 420px; overflow-y: auto; }
+@media (max-width: 560px) {
+  #menu-panel.open { max-height: min(600px, 80vh); }
+}
 
 #menu-inner {
   background: rgba(0,0,0,0.85);
@@ -173,6 +185,7 @@ button.active-btn {
 .audio-row {
   display: flex; align-items: center; gap: 8px;
   margin-bottom: 8px;
+  flex-wrap: wrap; row-gap: 6px;
 }
 .row-label {
   width: 84px; flex-shrink: 0; white-space: nowrap;
@@ -193,7 +206,7 @@ button.active-btn {
   margin: -4px 0 8px 92px; font-size: 10px; min-height: 12px;
 }
 
-#beat-presets { display: flex; gap: 4px; }
+#beat-presets { display: flex; gap: 4px; flex-wrap: wrap; }
 .beat-preset { width: 28px; padding: 3px 0; font-size: 11px; text-align: center; }
 .beat-preset.active {
   background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); color: #fff;
@@ -218,3 +231,28 @@ button.active-btn {
 }
 @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
 #audio-deactivate-btn { padding: 2px 7px; font-size: 10px; }
+
+/* ── Touch-friendly tap targets ── */
+@media (hover: none) and (pointer: coarse) {
+  button { padding: 6px 10px; }
+  .beat-preset { padding: 6px 4px; }
+  .audio-src-btn { padding: 7px 6px; }
+  #audio-apply-btn { padding: 7px 14px; }
+  #audio-deactivate-btn { padding: 5px 9px; }
+}
+
+/* ── Responsive layout (narrow viewports) ── */
+@media (max-width: 560px) {
+  #controls { gap: 4px 6px; }
+  #blog { width: 84px; }
+  #time { width: 34px; }
+
+  .row-label { width: 100%; }
+  #audio-status { margin-left: 0; }
+  #audio-source-row { flex: 1 1 100%; }
+}
+
+@media (max-width: 380px) {
+  #blog { width: 64px; }
+  .beat-preset { width: 24px; }
+}
