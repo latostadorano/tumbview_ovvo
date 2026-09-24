@@ -24,17 +24,18 @@ body.ui-visible { cursor: default; }
   border-radius: 4px;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 1px;
-  opacity: 1;
+  opacity: 0;
+  pointer-events: none;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  z-index: 100; transition: opacity 0.1s, background 0.15s;
+  z-index: 100; transition: opacity 0.4s, background 0.15s;
 }
 #tab-overlay:hover, #tab-overlay:active {
   background: rgba(255,255,255,0.2);
 }
-#tab-overlay.visible { opacity: 1; }
+body.ui-visible #tab-overlay, #tab-overlay.visible { opacity: 1; pointer-events: auto; }
 #tab-bpm  { font: bold 11px 'Courier New',monospace; color: #fff; line-height: 1; }
 #tab-taps { font: 9px 'Courier New',monospace; color: rgba(255,255,255,0.45); line-height: 1; }
 

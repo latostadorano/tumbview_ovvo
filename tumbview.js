@@ -86,8 +86,18 @@ function wakeUI() {
   clearTimeout(cursorTimer);
   cursorTimer = setTimeout(hideUI, UI_IDLE_MS);
 }
-document.addEventListener('mousemove', wakeUI);
-document.addEventListener('touchstart', wakeUI, { passive: true });
+document.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') wakeUI(); });
+// en táctil un tap sobre la foto avanza; solo el swipe muestra los controles
+const SWIPE_MIN_PX = 40;
+let touchX0 = 0, touchY0 = 0;
+document.addEventListener('touchstart', e => {
+  touchX0 = e.touches[0].clientX; touchY0 = e.touches[0].clientY;
+  if (document.body.classList.contains('ui-visible')) wakeUI();
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  const t = e.changedTouches[0];
+  if (Math.hypot(t.clientX - touchX0, t.clientY - touchY0) >= SWIPE_MIN_PX) wakeUI();
+}, { passive: true });
 document.addEventListener('keydown', wakeUI);
 wakeUI();
 
