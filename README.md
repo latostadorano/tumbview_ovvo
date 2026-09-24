@@ -20,7 +20,7 @@ Tumbview fetches photo posts from one or more Tumblr blogs through the Tumblr AP
 - Random, non-repeating photo order with automatic pagination
 - Play / pause, next / previous navigation (previous steps back through playback history)
 - Fullscreen toggle, open the current photo's original Tumblr post in a new tab
-- Minimal UI that auto-hides during playback and reappears on mouse move, key press, or touch
+- Minimal UI (including the tap-tempo button) that auto-hides after 4s of inactivity and reappears on mouse move, key press, or a swipe on touch screens
 - Responsive layout and touch-friendly controls for mobile
 
 ## Controls

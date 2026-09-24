@@ -69,7 +69,7 @@ function setTimerSource(src) {
 }
 
 // ── UI / cursor ───────────────────────────────────────────
-const UI_IDLE_MS = 7000;
+const UI_IDLE_MS = 4000;
 let cursorTimer;
 function hideUI() {
   // no ocultar con el menú abierto o escribiendo en un campo de los controles
