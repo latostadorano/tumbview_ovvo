@@ -69,16 +69,27 @@ function setTimerSource(src) {
 }
 
 // ── UI / cursor ───────────────────────────────────────────
+const UI_IDLE_MS = 7000;
 let cursorTimer;
+function hideUI() {
+  // no ocultar con el menú abierto o escribiendo en un campo de los controles
+  if (menuPanel.classList.contains('open') || ui.contains(document.activeElement)) {
+    cursorTimer = setTimeout(hideUI, UI_IDLE_MS);
+    return;
+  }
+  document.body.classList.remove('ui-visible');
+  ui.classList.remove('visible');
+}
 function wakeUI() {
   document.body.classList.add('ui-visible');
+  ui.classList.add('visible');
   clearTimeout(cursorTimer);
-  cursorTimer = setTimeout(() => document.body.classList.remove('ui-visible'), 3000);
+  cursorTimer = setTimeout(hideUI, UI_IDLE_MS);
 }
 document.addEventListener('mousemove', wakeUI);
 document.addEventListener('touchstart', wakeUI, { passive: true });
-document.body.classList.add('ui-visible');
-ui.classList.add('visible');   // siempre visible
+document.addEventListener('keydown', wakeUI);
+wakeUI();
 
 function closePanels() {
   menuPanel.classList.remove('open');
