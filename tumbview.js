@@ -200,8 +200,15 @@ function togglePlay() {
     // tab y audio se reactivan cuando el usuario tapea o detecta beats
   }
 }
+// Navegación manual: en modo de tiempo fijo reinicia la cuenta, para que no
+// salte la foto de golpe justo después de avanzar/retroceder a mano.
+function restartManualTimer() { if (isPlaying && timerSource === 'manual') startManualTimer(); }
+function goNext() { next(); restartManualTimer(); }
+function goPrev() { prev(); restartManualTimer(); }
+
 foto.style.cursor = 'pointer';
-foto.addEventListener('click', () => { next(); if (isPlaying && timerSource === 'manual') startManualTimer(); });
+foto.addEventListener('click', goNext);
+document.getElementById('prev-zone').addEventListener('click', goPrev);
 
 // ── Load blog ─────────────────────────────────────────────
 goBtn.addEventListener('click', () => loadBlog(false));
@@ -234,12 +241,26 @@ async function fetchPhotos() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     const before = photoList.length;
-    data.response.posts.filter(p => p.type === 'photo')
-      .forEach(p => p.photos.forEach(ph =>
-        photoList.push({ url: ph.original_size.url, postUrl: p.post_url })
-      ));
+    data.response.posts.forEach(p => {
+      // posts hechos con el editor nuevo (NPF) llegan como type 'text', con
+      // las imágenes dentro del HTML de body en vez de en p.photos
+      const urls = p.type === 'photo' ? p.photos.map(ph => ph.original_size.url) : imagesFromHtml(p.body);
+      urls.forEach(url => photoList.push({ url, postUrl: p.post_url }));
+    });
     if (photoList.length === before) blogExhausted = true;
   } catch(err) { console.error('Tumblr API error:', err); goBtn.textContent = 'Error'; }
+}
+// URL de mayor resolución de cada <img> (último/mayor ancho del srcset)
+function imagesFromHtml(html) {
+  if (!html) return [];
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return [...doc.querySelectorAll('img')].map(img => {
+    const best = (img.getAttribute('srcset') || '').split(',')
+      .map(s => s.trim().split(/\s+/))
+      .filter(([u, w]) => u && w)
+      .sort((a, b) => parseInt(b[1]) - parseInt(a[1]))[0];
+    return best ? best[0] : img.getAttribute('src');
+  }).filter(Boolean);
 }
 function randomUnshown() {
   const pool = photoList.map((_,i) => i).filter(i => !shown.has(i));
@@ -278,8 +299,8 @@ document.addEventListener('keydown', e => {
   if (e.code === 'KeyF'       && !inInput) { e.preventDefault(); document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); return; }
   if (e.code === 'Enter'      && !inInput) { e.preventDefault(); loadBlog(false); return; }
   if (e.code === 'Space'      && !inInput) { e.preventDefault(); togglePlay(); return; }
-  if (e.code === 'ArrowRight' && !inInput) { e.preventDefault(); next(); if (isPlaying && timerSource === 'manual') startManualTimer(); return; }
-  if (e.code === 'ArrowLeft'  && !inInput) { e.preventDefault(); prev(); return; }
+  if (e.code === 'ArrowRight' && !inInput) { e.preventDefault(); goNext(); return; }
+  if (e.code === 'ArrowLeft'  && !inInput) { e.preventDefault(); goPrev(); return; }
   if (e.code === 'ArrowDown'  && !inInput) { e.preventDefault(); switchToBlog((blogIdx+1) % blogs.length); return; }
   if (e.code === 'ArrowUp'    && !inInput) { e.preventDefault(); switchToBlog((blogIdx-1+blogs.length) % blogs.length); return; }
   if (e.code === 'Tab'        && !inInput) { e.preventDefault(); if (!tabIsDown) { tabIsDown = true; onTabDown(); } }

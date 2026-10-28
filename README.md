@@ -36,6 +36,7 @@ Tumbview fetches photo posts from one or more Tumblr blogs through the Tumblr AP
 | `F` | Toggle fullscreen |
 | `Esc` | Close the menu |
 | Click on photo | Next photo |
+| Click on left 20% of the screen | Previous photo |
 | ▶ / ⏸ button | Play / pause |
 | 🔗 button | Open current photo's post on Tumblr |
 | ☰ button | Open the Blogs / Audio menu |
