@@ -213,6 +213,9 @@ document.getElementById('prev-zone').addEventListener('click', goPrev);
 // ── Load blog ─────────────────────────────────────────────
 goBtn.addEventListener('click', () => loadBlog(false));
 blogInput.addEventListener('input', () => blogInput.classList.remove('blog-error'));
+blogInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); blogInput.blur(); loadBlog(false); }
+});
 async function loadBlog(preservePlayState) {
   if (!API_KEY) { goBtn.textContent = 'Missing API key — see README'; return; }
   blog = blogInput.value.trim() || blog;

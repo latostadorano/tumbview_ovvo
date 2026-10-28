@@ -27,7 +27,7 @@ Tumbview fetches photo posts from one or more Tumblr blogs through the Tumblr AP
 
 | Input | Action |
 |---|---|
-| `Enter` | Load the blog and start |
+| `Enter` (also inside the blog name field) | Load the blog and start |
 | `Space` / `→` | Next photo |
 | `←` | Previous photo |
 | `↑` / `↓` | Switch to previous/next blog in the list |
@@ -35,8 +35,8 @@ Tumbview fetches photo posts from one or more Tumblr blogs through the Tumblr AP
 | `A` | Toggle audio-reactive mode on/off (after pressing Start in the Audio panel) |
 | `F` | Toggle fullscreen |
 | `Esc` | Close the menu |
-| Click on photo | Next photo |
-| Click on left 20% of the screen | Previous photo |
+| Click on right half of the screen | Next photo |
+| Click on left half of the screen | Previous photo |
 | ▶ / ⏸ button | Play / pause |
 | 🔗 button | Open current photo's post on Tumblr |
 | ☰ button | Open the Blogs / Audio menu |

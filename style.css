@@ -14,11 +14,11 @@ body.ui-visible { cursor: default; }
   object-fit: contain;
 }
 
-/* zona invisible: primer 20% horizontal, altura completa → foto anterior */
+/* zona invisible: mitad izquierda, altura completa → foto anterior */
 #prev-zone {
   position: fixed;
   top: 0; left: 0;
-  width: 20%; height: 100%;
+  width: 50%; height: 100%;
   z-index: 5;
   -webkit-tap-highlight-color: transparent;
 }
