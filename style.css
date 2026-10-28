@@ -125,6 +125,8 @@ button.active-btn {
 /* Timer indicators */
 .timer-active  { border-color: #c0392b !important; box-shadow: 0 0 0 1px #c0392b !important; }
 .timer-inactive { opacity: 0.3 !important; }
+/* blog que no se pudo cargar (no existe, privado o sin fotos) */
+.blog-error   { border-color: #c0392b !important; box-shadow: 0 0 0 1px #c0392b !important; }
 @keyframes confirmFlash {
   0%   { border-color: #fff; box-shadow: 0 0 0 1px #fff; }
   100% { border-color: #c0392b; box-shadow: 0 0 0 1px #c0392b; }

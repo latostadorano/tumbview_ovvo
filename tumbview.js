@@ -212,6 +212,7 @@ document.getElementById('prev-zone').addEventListener('click', goPrev);
 
 // ── Load blog ─────────────────────────────────────────────
 goBtn.addEventListener('click', () => loadBlog(false));
+blogInput.addEventListener('input', () => blogInput.classList.remove('blog-error'));
 async function loadBlog(preservePlayState) {
   if (!API_KEY) { goBtn.textContent = 'Missing API key — see README'; return; }
   blog = blogInput.value.trim() || blog;
@@ -221,6 +222,7 @@ async function loadBlog(preservePlayState) {
   goBtn.textContent = '...'; goBtn.disabled = true;
   reset(); await fetchPhotos();
   goBtn.textContent = 'Go'; goBtn.disabled = false;
+  blogInput.classList.toggle('blog-error', photoList.length === 0);
   if (photoList.length > 0) {
     playBtn.disabled = false; linkBtn.disabled = false;
     if (preservePlayState) { next(); if (isPlaying && timerSource === 'manual') startManualTimer(); }
@@ -273,6 +275,9 @@ function showPhoto(idx) {
   foto.style.visibility = 'visible';
 }
 async function next() {
+  // si retrocedimos, avanzar recorre el historial en el mismo orden
+  // antes de pedir fotos nuevas
+  if (histPos < history.length - 1) { histPos++; showPhoto(history[histPos]); return; }
   let idx = randomUnshown();
   if (idx === -1 && !blogExhausted) {
     // all currently loaded photos seen — fetch next page (previously shown
