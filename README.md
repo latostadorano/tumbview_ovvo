@@ -15,10 +15,13 @@ Tumbview fetches photo posts from one or more Tumblr blogs through the Tumblr AP
 
 ## Features
 
-- Load any public Tumblr blog by name, and keep a list of several to switch between
+- Load any public Tumblr blog by name, and keep a list of several to switch between — works with both classic photo posts and posts made with Tumblr's newer editor (NPF)
+- The blog name field gets a red border when a blog can't be loaded (doesn't exist, is private, or has no photos)
 - Three interchangeable timer modes: fixed interval, manual tap-tempo, or automatic audio beat detection (mic or system/tab audio)
 - Random, non-repeating photo order with automatic pagination
-- Play / pause, next / previous navigation (previous steps back through playback history)
+- Play / pause, next / previous navigation: previous steps back through playback history, and next replays that history in the same order before picking new photos
+- In fixed-interval mode, any manual next / previous restarts the countdown, so the photo never jumps right after you navigate
+- Click / tap the right half of the screen for next, the left half for previous
 - Fullscreen toggle, open the current photo's original Tumblr post in a new tab
 - Minimal UI (including the tap-tempo button) that auto-hides after 4s of inactivity and reappears on mouse move, key press, or a swipe on touch screens
 - Responsive layout and touch-friendly controls for mobile
