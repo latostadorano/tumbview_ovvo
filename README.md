@@ -28,7 +28,8 @@ Tumbview fetches photo posts from one or more Tumblr blogs through the Tumblr AP
 | Input | Action |
 |---|---|
 | `Enter` (also inside the blog name field) | Load the blog and start |
-| `Space` / `→` | Next photo |
+| `Space` | Play / pause |
+| `→` | Next photo |
 | `←` | Previous photo |
 | `↑` / `↓` | Switch to previous/next blog in the list |
 | `Tab` (or click/tap the tap-tempo button) | Tap along to set the beat manually |
