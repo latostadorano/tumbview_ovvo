@@ -13,6 +13,7 @@ let history  = [];
 let histPos  = -1;
 let currentPostUrl = '';
 let timeImg  = 10;
+let baseTime = 10;            // tiempo elegido por el usuario, sin multiplicador de rueda
 let timer    = null;          // setInterval para modo manual
 let isPlaying = false;
 let timerSource = 'manual';   // 'manual' | 'tab' | 'audio'
@@ -174,6 +175,7 @@ function applyManualTime() {
   deactivateAudioTimer();
   timeImg = Math.max(0.5, parseFloat(timeInput.value) || 10);
   timeInput.value = timeImg;
+  setBaseTime(timeImg);
   setTimerSource('manual');
   if (isPlaying) startManualTimer();
 }
@@ -221,7 +223,7 @@ async function loadBlog(preservePlayState) {
   blog = blogInput.value.trim() || blog;
   if (!blogs.includes(blog)) { blogs.push(blog); blogIdx = blogs.length - 1; }
   else blogIdx = blogs.indexOf(blog);
-  if (!preservePlayState) timeImg = parseFloat(timeInput.value) || 10;
+  if (!preservePlayState) { timeImg = parseFloat(timeInput.value) || 10; setBaseTime(timeImg); }
   goBtn.textContent = '...'; goBtn.disabled = true;
   reset(); await fetchPhotos();
   goBtn.textContent = 'Go'; goBtn.disabled = false;
@@ -390,6 +392,10 @@ multEl.id = 'mult-display';
 multEl.style.cssText = 'position:fixed;right:14px;top:50%;transform:translateY(-50%);font-family:Courier New,monospace;font-size:24px;font-weight:bold;color:rgba(255,255,255,0.9);pointer-events:none;z-index:100;opacity:0;transition:opacity 0.15s;text-shadow:0 0 16px rgba(0,0,0,0.9)';
 document.body.appendChild(multEl);
 
+// Nuevo tiempo base: el multiplicador vuelve a ×1 para que la rueda escale
+// siempre desde lo que eligió el usuario y no desde el valor ya multiplicado.
+function setBaseTime(t) { baseTime = t; multStepIdx = MULT_STEPS.indexOf(1); }
+
 function showMult(label) {
   multEl.textContent = label;
   multEl.style.opacity = '1';
@@ -417,8 +423,7 @@ document.addEventListener('wheel', e => {
     timeImg = iv / 1000;
     timeInput.value = timeImg.toFixed(2);
   } else if (timerSource === 'manual' && isPlaying) {
-    const base = parseFloat(timeInput.dataset.base) || timeImg;
-    timeImg = Math.max(0.1, base * m);
+    timeImg = Math.max(0.1, baseTime * m);
     timeInput.value = timeImg.toFixed(2);
     startManualTimer();
   }
