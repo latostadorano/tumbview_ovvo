@@ -224,10 +224,25 @@ function navClick(fn) {
   };
 }
 
+// Con mouse se navega al apretar el botón (pointerdown), no al soltarlo.
+// En táctil se sigue usando click, para que un swipe no cuente como tap.
+function bindNav(el, fn) {
+  const nav = navClick(fn);
+  let mouseDown = false;   // el click que sigue a un pointerdown de mouse se ignora
+  el.addEventListener('pointerdown', e => {
+    mouseDown = e.pointerType === 'mouse';
+    if (mouseDown && e.button === 0) nav();
+  });
+  el.addEventListener('click', () => {
+    if (mouseDown) { mouseDown = false; return; }
+    nav();
+  });
+}
+
 foto.style.cursor = 'pointer';
 foto.draggable = false;   // sin arrastre nativo de imagen al mantener apretado
-foto.addEventListener('click', navClick(goNext));
-document.getElementById('prev-zone').addEventListener('click', navClick(goPrev));
+bindNav(foto, goNext);
+bindNav(document.getElementById('prev-zone'), goPrev);
 
 // ── Load blog ─────────────────────────────────────────────
 goBtn.addEventListener('click', () => loadBlog(false));
