@@ -208,9 +208,24 @@ function restartManualTimer() { if (isPlaying && timerSource === 'manual') start
 function goNext() { next(); restartManualTimer(); }
 function goPrev() { prev(); restartManualTimer(); }
 
+// Algunos mouses "rebotan" y un solo click llega como dos clicks seguidos
+// (el segundo trae e.detail >= 2): se ignoran los clicks a menos de
+// NAV_DEBOUNCE_MS del anterior para que no salte dos fotos.
+const NAV_DEBOUNCE_MS = 250;
+let lastNavClick = 0;
+function navClick(fn) {
+  return e => {
+    const now = performance.now();
+    if (now - lastNavClick < NAV_DEBOUNCE_MS) return;
+    lastNavClick = now;
+    fn();
+  };
+}
+
 foto.style.cursor = 'pointer';
-foto.addEventListener('click', goNext);
-document.getElementById('prev-zone').addEventListener('click', goPrev);
+foto.draggable = false;   // sin arrastre nativo de imagen al mantener apretado
+foto.addEventListener('click', navClick(goNext));
+document.getElementById('prev-zone').addEventListener('click', navClick(goPrev));
 
 // ── Load blog ─────────────────────────────────────────────
 goBtn.addEventListener('click', () => loadBlog(false));
@@ -279,7 +294,13 @@ function showPhoto(idx) {
   currentPostUrl = photoList[idx].postUrl;
   foto.style.visibility = 'visible';
 }
+let nextBusy = false;      // evita dos next() en paralelo mientras se baja una página
 async function next() {
+  if (nextBusy) return;
+  nextBusy = true;
+  try { await nextInner(); } finally { nextBusy = false; }
+}
+async function nextInner() {
   // si retrocedimos, avanzar recorre el historial en el mismo orden
   // antes de pedir fotos nuevas
   if (histPos < history.length - 1) { histPos++; showPhoto(history[histPos]); return; }
