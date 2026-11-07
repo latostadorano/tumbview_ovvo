@@ -94,6 +94,10 @@ input[type="text"], input[type="number"] {
 input:focus { border-color: rgba(255,255,255,0.5); }
 #blog { width: 100px; }
 #time { width: 40px; text-align: center; }
+/* sin flechitas arriba/abajo en el input numérico */
+#time { -moz-appearance: textfield; appearance: textfield; }
+#time::-webkit-outer-spin-button,
+#time::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
 button {
   background: rgba(255,255,255,0.07);

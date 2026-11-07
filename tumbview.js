@@ -168,6 +168,8 @@ function addBlog() {
 // ── Manual time ───────────────────────────────────────────
 timeInput.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); applyManualTime(); timeInput.blur(); }
+  // Enter en el tiempo hace lo mismo que el botón Go
+  if (e.key === 'Enter') loadBlog(false);
 });
 function applyManualTime() {
   killAllTimers();
